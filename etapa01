@@ -1,0 +1,134 @@
+
+// LED AZUL E VERDE
+const int ledPins[2] = {8, 9};
+
+// BUTTON
+const int buttonPins[2] = {2, 3};
+
+
+const int maxSequence = 20;
+int sequence[maxSequence];
+int level = 1;
+
+//DLAY
+int tempoLED = 500;
+int tempoEntre = 250;
+
+
+
+void setup() {
+  Serial.begin(9600);
+
+ 
+  for (int i = 0; i < 2; i++) {
+    pinMode(ledPins[i], OUTPUT);
+  }
+
+ 
+  for (int i = 0; i < 2; i++) {
+    pinMode(buttonPins[i], INPUT_PULLUP);
+  }
+
+  randomSeed(analogRead(0));
+
+  Serial.println("START GAME");
+}
+
+
+
+void loop() {
+  gerarSequencia();
+  mostrarSequencia();
+
+  if (lerJogador()) {
+    level++;
+    Serial.print("BINGO! Nivel: ");
+    Serial.println(level);
+    delay(1000);
+  } else {
+    erro();
+    level = 1;
+    delay(1000);
+  }
+}
+
+
+
+void gerarSequencia() {
+  for (int i = 0; i < level; i++) {
+    sequence[i] = random(0, 2);
+
+    Serial.print("Passo ");
+    Serial.print(i);
+    Serial.print(": LED ");
+    Serial.println(sequence[i]);
+  }
+}
+
+
+
+void mostrarSequencia() {
+  Serial.println("Mostrando sequencia...");
+
+  for (int i = 0; i < level; i++) {
+    int led = sequence[i];
+
+    digitalWrite(ledPins[led], HIGH);
+    delay(tempoLED);
+
+    digitalWrite(ledPins[led], LOW);
+    delay(tempoEntre);
+  }
+}
+
+
+
+bool lerJogador() {
+  Serial.println("Sua vez!");
+
+  for (int i = 0; i < level; i++) {
+    int botao = esperarBotao();
+
+    Serial.print("Voce pressionou: ");
+    Serial.println(botao);
+
+    if (botao != sequence[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+
+int esperarBotao() {
+  while (true) {
+    for (int i = 0; i < 2; i++) {
+      if (digitalRead(buttonPins[i]) == LOW) {
+        delay(200); // debounce
+
+        while (digitalRead(buttonPins[i]) == LOW);
+
+        return i;
+      }
+    }
+  }
+}
+
+
+void erro() {
+  Serial.println("Erro! Reiniciando...");
+
+  for (int i = 0; i < 5; i++) {
+    for (int j = 0; j < 2; j++) {
+      digitalWrite(ledPins[j], HIGH);
+    }
+    delay(150);
+
+    for (int j = 0; j < 2; j++) {
+      digitalWrite(ledPins[j], LOW);
+    }
+    delay(150);
+  }
+}
