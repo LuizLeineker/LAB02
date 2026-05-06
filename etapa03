@@ -1,19 +1,12 @@
-// =====================
-// Jogo de Memória + Display 7 Segmentos
-// =====================
-
+//4 LEDs e 4 Botões
 const int numLeds = 4;
 
-// LEDs
 const int ledPins[numLeds] = {8, 9, 10, 11};
 
-// Botões
 const int buttonPins[numLeds] = {2, 3, 4, 5};
 
-// Display (a, b, c, d, e, f, g)
 const int segPins[7] = {6, 7, 12, 13, A0, A1, A2};
 
-// Dígitos (0-9) → cátodo comum
 byte digits[10][7] = {
   {1,1,1,1,1,1,0}, // 0
   {0,1,1,0,0,0,0}, // 1
@@ -27,16 +20,15 @@ byte digits[10][7] = {
   {1,1,1,1,0,1,1}  // 9
 };
 
-// Sequência
 const int maxSequence = 50;
 int sequence[maxSequence];
 int level = 1;
 
-// Tempo
+
 int tempoLED = 350;
 int tempoEntre = 180;
 
-// =====================
+
 
 void setup() {
   Serial.begin(9600);
@@ -55,7 +47,6 @@ void setup() {
   Serial.println("=== Jogo com Display ===");
 }
 
-// =====================
 
 void loop() {
 
@@ -80,9 +71,7 @@ void loop() {
   }
 }
 
-// =====================
-// DISPLAY
-// =====================
+
 
 void mostrarNivel() {
   Serial.print("Nivel: ");
@@ -99,9 +88,6 @@ void mostrarDigito(int num) {
   }
 }
 
-// =====================
-// JOGO
-// =====================
 
 void gerarSequencia() {
   Serial.println("\nSequencia:");
@@ -116,7 +102,7 @@ void gerarSequencia() {
   Serial.println();
 }
 
-// =====================
+
 
 void mostrarSequencia() {
   Serial.println("Mostrando...");
@@ -132,7 +118,7 @@ void mostrarSequencia() {
   }
 }
 
-// =====================
+
 
 bool lerJogador() {
   Serial.println("Repita:");
@@ -155,7 +141,7 @@ bool lerJogador() {
   return true;
 }
 
-// =====================
+
 
 int esperarBotao() {
   while (true) {
@@ -169,9 +155,7 @@ int esperarBotao() {
   }
 }
 
-// =====================
-// EVENTOS
-// =====================
+
 
 void erro() {
   Serial.println("Erro!");
@@ -184,7 +168,7 @@ void erro() {
   }
 }
 
-// =====================
+
 
 void vitoria() {
   Serial.println("VITORIA!!!");
@@ -197,7 +181,7 @@ void vitoria() {
     delay(200);
   }
 
-  // LEDs em sequência
+  //LEDs em sequência
   for (int i = 0; i < 6; i++) {
     for (int j = 0; j < numLeds; j++) {
       digitalWrite(ledPins[j], HIGH);
@@ -207,7 +191,7 @@ void vitoria() {
   }
 }
 
-// =====================
+
 
 void limparDisplay() {
   for (int i = 0; i < 7; i++) {
@@ -215,7 +199,7 @@ void limparDisplay() {
   }
 }
 
-// =====================
+
 
 void ligarTodos() {
   for (int i = 0; i < numLeds; i++) {
